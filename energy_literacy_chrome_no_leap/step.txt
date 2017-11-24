@@ -1,0 +1,18 @@
+[disable foreground flashing]
+- run regedit.exe
+- open HKCU\Control Panel\Desktop
+- change ForegroundFlashCount to 1
+- change ForegroundLockTimeout to 0
+
+[working folder]
+C:\Users\admin\Documents\energy_literacy_chrome
+
+serial-port-json-server
+C:\Users\admin\Documents\energy_literacy_chrome\support\serial-port-json-server-1.86_windows_amd64\serial-port-json-server.exe
+
+
+
+[startup]
+- press win+R
+- type shell:startup
+- copy batch file (energy_literacy_startup.bat) to
