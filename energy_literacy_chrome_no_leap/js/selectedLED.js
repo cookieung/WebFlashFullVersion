@@ -80,7 +80,7 @@ myState.create = function(){
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
 						console.log( "Time's Up" );
-						// window.location.href = '../index.html';
+						window.location.href = '../index.html';
 						clock.removeTimer( timer );
 					}
 
@@ -99,6 +99,8 @@ myState.create = function(){
 myState.moveCursor = function () {
 	this.character.x = this.game.input.mouse.x - 100 * 0.5;
 	this.character.y = this.game.input.mouse.y - 100 * 0.5;
+
+	this.updateButtonAnimation();
 
 	if(this.game.input.mouse.isDown){
 		this.character.animation.play('press');

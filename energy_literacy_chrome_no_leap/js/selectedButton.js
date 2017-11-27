@@ -118,6 +118,8 @@ myState.moveCursor = function () {
 	this.character.x = mouse.x - 100 * 0.5;
 	this.character.y = mouse.y - 100 * 0.5;
 
+	this.updateButtonAnimation();
+
 	if(mouse.isDown){
 		this.character.animation.play('press');
 		this.updateTheVelocity();
