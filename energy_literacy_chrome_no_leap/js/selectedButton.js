@@ -131,7 +131,7 @@ myState.moveCursor = function () {
 myState.update = function(){
 	  Kiwi.State.prototype.update.call(this);
 	  
-
+	  console.log(mouse.x,mouse.y);
 	
 
 	if(!this.control.active) {
@@ -226,13 +226,6 @@ myState.updateTheVelocity = function(){
 				return;
 		}
 	}
-
-}
-
-myState.mouseOverlapButton = function(sprite){
-	console.log(sprite.page)
-	console.log(mouse.x,sprite.x,Math.abs(mouse.x-sprite.x));
-	console.log(mouse.y,sprite.y,Math.abs(mouse.y-sprite.y));
 
 }
 

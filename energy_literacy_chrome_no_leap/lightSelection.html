@@ -34,7 +34,7 @@
 <script src="energy_literacy_chrome_no_leap/js/jquery.touchSwipe.min.js"></script>
 <script type="text/javascript" src="energy_literacy_chrome_no_leap/js/leap-0.6.4.min.js"></script>
 <script type="text/javascript" src="energy_literacy_chrome_no_leap/js/leapcontrol.js"></script> -->
-<script src="js/swipeLeapController.js"></script>
+
 <script>
 if(external.LedBlink){
   for(var i=0; i<16; i++){
@@ -141,8 +141,8 @@ function handleComplete() {
 </head>
 <body onload="b();" style="margin:0px;">
 
-	<div style="position: relative;">
-		<div id="layer1" style="position: absolute; z-index: 2; bottom: 50px; width:100%; height:100%;">
+	<div>
+		<div id="layer1" style="position: absolute; z-index: 2; bottom: 50px; width:100%; height:100%; pointer-events: none;">
 			<div id="animation_container" style="display : block; position: absolute; z-index: 1; bottom: 0px; width:1920px; height:300px;">
 				<canvas id="canvas" width="1920" height="300"></canvas>
 				<div id="dom_overlay_container" style="pointer-events:none; overflow:hidden; width:1920px; height:300px; position: absolute; left: 0px; top: 0px; display: block;">
@@ -150,7 +150,7 @@ function handleComplete() {
 			</div>
 
 		</div>
-		<div id="layer2" style="position: absolute; z-index: -1;"></div>
+
 	</div>
 	<div id="pt-main" style="display: none;">
 		<video playsinline id="video" style="width:100%; height:100%;" autoplay>
@@ -165,4 +165,5 @@ function handleComplete() {
 
 
 </body>
+
 </html>

@@ -18,6 +18,7 @@ var preloader = new Kiwi.State('preloader');
 //timer ก็คือ ตัวที่จะใช้จับเวลา ที่ต้องประกาษตรงนี้เพราะจะได้ใช้ได้กับทุกๆ Component
 var timer;
 
+
 //เขียนตามนี้ไปเลย เป็น Template อยู่แล้ว
 myState.preload = function(){
   Kiwi.State.prototype.preload.call(this);
@@ -32,7 +33,7 @@ myState.create = function(){
 	//this.something จะหมายถึง ให้ component ที่ชื่อ something เป็นของ myState
 
 	//เนื่องจาก KiwiJS เอาไว้สำหรับทำเกม ดังนั้นจึงต้องมีพื้นหลัง กรณีไม่ได้เขียนบรรทัดนี้ก็จะเป็นพื้นหลังสีขาวอัตโนมัติ
-  this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
+  	this.background = new Kiwi.GameObjects.StaticImage(this, this.textures.background, 0, 0);
 	this.game.fullscreen;
 
 	this.label1 = new Kiwi.GameObjects.Sprite(this, this.textures.label_led1, 55, 540);
@@ -41,20 +42,24 @@ myState.create = function(){
 
 	this.character = new Pointer( this, this.textures.characterSprite, 900, 500 );
 
+	this.character.physics = this.components.add(new Kiwi.Components.ArcadePhysics(this.character, this.character.box));
+	
+	mouse = this.game.input.mouse;
+
 	this.buttonGroup = new Kiwi.Group(this);
 	this.LED1 = new Button( this, this.textures.LED1,170,190, 1);
-  this.LED2 = new Button( this, this.textures.LED2,780,190, 2);
+  	this.LED2 = new Button( this, this.textures.LED2,780,190, 2);
 	this.LED3 = new Button( this, this.textures.LED3, 1380,190, 3);
-
-	this.buttonGroup.addChild(this.LED1);
-	this.buttonGroup.addChild(this.LED2);
-	this.buttonGroup.addChild(this.LED3);
 
 	this.addChild(this.background);
 
 	this.addChild(this.label1);
 	this.addChild(this.label2);
 	this.addChild(this.label3);
+
+	this.buttonGroup.addChild(this.LED1);
+	this.buttonGroup.addChild(this.LED2);
+	this.buttonGroup.addChild(this.LED3);
 
 
 	this.addChild(this.buttonGroup);
@@ -68,13 +73,14 @@ myState.create = function(){
 	timer = clock.createTimer( "timeoutTimer", 10 );
 	//ต่อไปนี้เป็นการบอกให้ timer รู้ว่าต้องทำอะไรเมื่อไหร่ ในที่นี้มันจะทำก็ต้องเมื่อ timer หยุดลง
 	timer.createTimerEvent( Kiwi.Time.TimerEvent.TIMER_STOP,
-			function() {
-if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || (sessionStorage.lamp >=7 && (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3))){
+			function() 
+			{
+					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || (sessionStorage.lamp >=7 && (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3))){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
 						console.log( "Time's Up" );
-						window.location.href = '../index.html';
+						// window.location.href = '../index.html';
 						clock.removeTimer( timer );
 					}
 
@@ -83,10 +89,27 @@ if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || (sessionSt
 	//เริ่มต้นจับเวลา
 	timer.start();
 
+	this.moveCursor();
 
 	//เป็นการสร้าง Leap Controller ให้กับ Kiwi ของเรา
 	//การจะประกาศบรรทัดนี้ได้ อย่าลืม import ให้ครบในหน้า html ที่ import ไฟล์นี้ด้วย
-  this.control = Kiwi.Plugins.LEAPController.createController();
+  	this.control = Kiwi.Plugins.LEAPController.createController();
+}
+
+myState.moveCursor = function () {
+	this.character.x = this.game.input.mouse.x - 100 * 0.5;
+	this.character.y = this.game.input.mouse.y - 100 * 0.5;
+
+	if(this.game.input.mouse.isDown){
+		this.character.animation.play('press');
+		var key = this.callVideo();
+		console.log('Key :'+key);
+		if(key > 0){
+		window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
+		sessionStorage.lamp = key;
+		}
+	}
+
 }
 
 
@@ -104,17 +127,15 @@ var Button = function (state,image, x, y, vid){
 
     this.physics = this.components.add(new Kiwi.Components.ArcadePhysics(this, this.box));
 
-		// game.input.mouse.onDown.add( this.fallen, this );
-
     Button.prototype.update = function(){
         Kiwi.GameObjects.Sprite.prototype.update.call(this);
         this.physics.update();
 				this.animation.play('lay');
     };
 
-		this.factoryPage = function(){
-			return this.page;
-		};
+	this.factoryPage = function(){
+		return this.page;
+	};
 
 
 }
@@ -125,14 +146,14 @@ var Pointer = function (state,image, x, y){
 
     this.animation.add( "point", [ 0 ], 0.01, false );
     this.animation.add( "press", [ 1 ], 0.01, false );
-    this.animation.play('point');
+    this.animation.play("point");
 
     this.physics = this.components.add(new Kiwi.Components.ArcadePhysics(this, this.box));
     Pointer.prototype.update = function(){
         Kiwi.GameObjects.Sprite.prototype.update.call(this);
-				timer.start();
         this.physics.update();
-        this.animation.play('point');
+		timer.start();
+		this.animation.play("point");
 
     }
 }
@@ -145,8 +166,13 @@ myState.update = function(){
 
 		// this.character.scaleX = (this.control.hands[0].posY - 20)/100;
 		// this.character.scaleY = (this.control.hands[0].posY - 20)/100;
+		
+		console.log(this.game.input.mouse.x,this.game.input.mouse.y);
 
 
+		if(!this.control.active){
+			this.moveCursor();
+		}else{
 			if(this.control.hands[0].pointables[0].touchZone == "hovering"){
 				// timer.start();
 				let xVal = this.control.hands[0].posX;
@@ -169,25 +195,27 @@ myState.update = function(){
 				this.character.y = newY;
 
 				this.updateButtonAnimation();
-	      console.log('hovering');
+				console.log('hovering');
 
-	    }else if(this.control.hands[0].pointables[0].touchZone == "touching"){
-				if(this.control.hands[0].posZ < 30){
-					console.log('Press at'+this.control.hands[0].posZ);
-					this.character.animation.play('press');
-						var key = this.callVideo();
-						console.log('Key :'+key);
-						if(key > 0){
-						window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
-						sessionStorage.lamp = key;
-						}
+			}else if(this.control.hands[0].pointables[0].touchZone == "touching"){
+					if(this.control.hands[0].posZ < 30){
+						console.log('Press at'+this.control.hands[0].posZ);
+						this.character.animation.play('press');
+							var key = this.callVideo();
+							console.log('Key :'+key);
+							if(key > 0){
+							window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
+							sessionStorage.lamp = key;
+							}
+					}
+			}
+			else{
+					this.character.animation.play("point");
 				}
 		}
-		else{
-		        this.character.animation.play('point');
-			}
 
-			var chkBtn = this.buttonGroup.members;
+
+
 
 }
 
