@@ -18,6 +18,9 @@ var preloader = new Kiwi.State('preloader');
 //timer ก็คือ ตัวที่จะใช้จับเวลา ที่ต้องประกาษตรงนี้เพราะจะได้ใช้ได้กับทุกๆ Component
 var timer;
 
+var isMoving = false;
+
+var mouse;
 
 //เขียนตามนี้ไปเลย เป็น Template อยู่แล้ว
 myState.preload = function(){
@@ -75,13 +78,13 @@ myState.create = function(){
 	timer.createTimerEvent( Kiwi.Time.TimerEvent.TIMER_STOP,
 			function() 
 			{
-					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || (sessionStorage.lamp >=7 && (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3))){
+					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" ||  (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3)){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
-						console.log( "Time's Up" );
-						window.location.href = '../index.html';
-						clock.removeTimer( timer );
+							console.log( "Time's Up" );
+							// window.location.href = '../index.html';
+							clock.removeTimer( timer );
 					}
 
 			} );
@@ -97,12 +100,17 @@ myState.create = function(){
 }
 
 myState.moveCursor = function () {
-	this.character.x = this.game.input.mouse.x - 100 * 0.5;
-	this.character.y = this.game.input.mouse.y - 100 * 0.5;
+
+	if(this.character.x === mouse.x - 100 * 0.5 && this.character.y === mouse.y - 100 * 0.5){
+		isMoving = false;
+	}else isMoving = true;
+
+	this.character.x = mouse.x - 100 * 0.5;
+	this.character.y = mouse.y - 100 * 0.5;
 
 	this.updateButtonAnimation();
 
-	if(this.game.input.mouse.isDown){
+	if(mouse.isDown){
 		this.character.animation.play('press');
 		var key = this.callVideo();
 		console.log('Key :'+key);
@@ -169,26 +177,34 @@ myState.update = function(){
 		// this.character.scaleX = (this.control.hands[0].posY - 20)/100;
 		// this.character.scaleY = (this.control.hands[0].posY - 20)/100;
 		
-		console.log(this.game.input.mouse.x,this.game.input.mouse.y);
+		console.log(mouse.x,mouse.y);
 
 
-		if(!this.control.active){
+		if(!this.control.controllerConnected){
 			this.moveCursor();
 		}else{
+			isMoving = true;
 			if(this.control.hands[0].pointables[0].touchZone == "hovering"){
 				// timer.start();
 				let xVal = this.control.hands[0].posX;
 				let yVal = (this.control.hands[0].posY);
 
-				//กำหนดให้ LEAP รู้ว่าเอามือลงโดยการอ้างอิงจากแกนYที่ตำแหน่ง 100
-				//แก้ความสูงมือ 4 จุด
-				if(yVal <= 100) yVal = (100 - yVal);
-				else if(yVal > 100) yVal = -1*(yVal -100);
+				if(this.yValMax) {
+					if(yVal>this.yValMax) { this.yValMax = yVal;}
+				} else {
+					this.yValMax = yVal;
+				}
+				if(this.yValMin) {
+					if(yVal<this.yValMin) { this.yValMin = yVal;}
+				} else {
+					this.yValMin = yVal;
+				}
 
+				yVal = yVal - 250;
 
-				let newX = this.character.x + xVal*0.7;
-				let newY = this.character.y + yVal*0.4375;
-			
+				let newX = gameOptions.width*(1.0+xVal/200)*0.5;
+				let newY = gameOptions.height*(1.0 - yVal/40)*0.5;
+
 				//ดักขอบ
 				if(newX < 20 || newX >1800) newX = this.character.x;
 				if(newY < 10 || newY > 700) newY = this.character.y;
