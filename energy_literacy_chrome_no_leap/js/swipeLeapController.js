@@ -5,7 +5,6 @@ var previousPage;
 
 function findNearPage(){
 	var filename = location.href.split('/')[ location.href.split('/').length - 1 ];
-  // console.log(filename=='index.html');
 	if(filename=='index.html'){
     nextPage = 'energy_literacy_chrome_no_leap/selectsource.html';
     previousPage = 'none';
@@ -21,12 +20,11 @@ var leapCnt = 0;
 findNearPage();
 //register the Leapmotion handler function
 
-console.log('Swipe file');
+
 if (external.AddListenerForLeapMotion)
 	external.AddListenerForLeapMotion(LeapHandler);
 
 	function LeapPointerDraw(hands) {
-		console.log("I'm here");
 
 	$("#leap-pointer").show();
 
@@ -36,7 +34,6 @@ if (external.AddListenerForLeapMotion)
 		var x = hands[0][0],
 				y = hands[0][1],
 				z = hands[0][2];
-				console.log("Leap Pointer"+x+" "+y+" "+z);
 		$("#leap-pointer").css({"left": x*window.innerWidth-100, "top": (1-y)*window.innerHeight-100});
 		$("#leap-pointer svg circle").attr({
 					"r": (80*(1-z)).toString(),
@@ -81,8 +78,6 @@ function LeapHandler(fh) {
  		var z = hands[0][2],
  				velX = hands[0][3],
  				velY = hands[0][4];
-        // console.log(nextPage);
-        // console.log(previousPage);
  			if (Math.abs(velX)>=Math.abs(velY)) {
  				if (Math.abs(velX)>800) {
  					if (velX>0) {

@@ -6,6 +6,7 @@ var gameOptions = {
 
 };
 
+
 //รูปแบบการสร้าง Animation ด้วย KiwiJS เบื้องต้น
 //myGame เป็นเหมือน Panel ที่เก็บทุกอย่างเอาไว้เพื่อเอาไปสร้างเป็น Canvas
 var myGame = new Kiwi.Game("layer2","kiwiLayer",null,gameOptions);

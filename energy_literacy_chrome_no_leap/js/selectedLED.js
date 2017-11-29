@@ -71,6 +71,10 @@ myState.create = function(){
 
 	this.addChild( this.character );
 
+	//เป็นการสร้าง Leap Controller ให้กับ Kiwi ของเรา
+	//การจะประกาศบรรทัดนี้ได้ อย่าลืม import ให้ครบในหน้า html ที่ import ไฟล์นี้ด้วย
+	this.control = Kiwi.Plugins.LEAPController.createController();
+
 	var clock = this.game.time.clock;
 	//เป็นการกสร้าง timer ขึ้นมาให้มันนับทีละ 10 วิ
 	timer = clock.createTimer( "timeoutTimer", 10 );
@@ -82,9 +86,11 @@ myState.create = function(){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
+							if( myState.control.controllerConnected ||(sessionStorage.lamp===undefined && !isMoving)){
 							console.log( "Time's Up" );
-							// window.location.href = '../index.html';
+							window.location.href = '../index.html';
 							clock.removeTimer( timer );
+							}
 					}
 
 			} );
@@ -94,9 +100,7 @@ myState.create = function(){
 
 	this.moveCursor();
 
-	//เป็นการสร้าง Leap Controller ให้กับ Kiwi ของเรา
-	//การจะประกาศบรรทัดนี้ได้ อย่าลืม import ให้ครบในหน้า html ที่ import ไฟล์นี้ด้วย
-  	this.control = Kiwi.Plugins.LEAPController.createController();
+
 }
 
 myState.moveCursor = function () {
