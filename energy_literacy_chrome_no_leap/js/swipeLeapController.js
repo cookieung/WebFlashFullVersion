@@ -50,27 +50,9 @@ if (external.AddListenerForLeapMotion)
 }
 
 function LeapHandler(fh) {
-	//$("#leap-info pre").text("fingers: " + JSON.stringify(fh.fingers, null, " "));
-	//$("#leap-info pre").text("gesture: " + JSON.stringify(fh.gesture, null, " "));
-	// $("#leap-info pre").text("hands: " + JSON.stringify(fh.hands, null, " "));
-	//
 	LeapPointerDraw(fh.hands);
-	// if (leapEnable) {
-		// console.log(currentPage);
-	//
-	// 	//check fingers appear
-	// 	if (fh.fingers.length>0) {
-	// 		if (typeof curPage.noTimeout !== "undefined") {
-	// 			//PageTransitions.nextPage({"animation": 58, "showPage": curPage.linkPages.right});
-	// 			PageTransitions.nextPage({"animation": 1, "showPage": curPage.linkPages.right});
-	// 			return;
-	// 		}
-	// 	}
 
 		LeapHandChangePage(fh.hands);
-		//LeapGestureChangePage(fh.gesture, curPage);
-	//
-	// }
 }
 
  function LeapHandChangePage(hands) {
