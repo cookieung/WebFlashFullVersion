@@ -19,7 +19,6 @@ var controller = Leap.loop(function(frame){
     }
 });
 
-
 //รูปแบบการสร้าง Animation ด้วย KiwiJS เบื้องต้น
 //myGame เป็นเหมือน Panel ที่เก็บทุกอย่างเอาไว้เพื่อเอาไปสร้างเป็น Canvas
 var myGame = new Kiwi.Game("layer2","kiwiLayer",null,gameOptions);
@@ -62,14 +61,14 @@ myState.create = function(){
 	mouse = this.game.input.mouse;
 
 	this.buttonGroup = new Kiwi.Group(this);
-	this.coal = new Button( this, this.textures.coal,298,150,'energy_source/01/03-1_1.html',23,24,30);
-	this.petroleum = new Button( this, this.textures.petroleum, 656,150,'energy_source/02/03-2_1.html',23,23,28);
-	this.nuclear = new Button( this, this.textures.nuclear, 1014,150,'energy_source/03/03-3_1.html',23,23,28);
-	this.gas = new Button( this, this.textures.gas, 1372,150,'energy_source/04/03-4_1.html',23,23,28);
-	this.water = new Button( this, this.textures.water, 298,473,'energy_source/05/03-5_1.html',21,21,26);
-	this.sun = new Button( this, this.textures.sun, 656,473,'energy_source/06/03-6_1.html',21,21,25);
-	this.wind = new Button( this, this.textures.wind, 1014,473,'energy_source/07/03-7_1.html',22,21,26);
-	this.underworld = new Button( this, this.textures.underworld, 1372,473,'energy_source/08/03-8_1.html',21,22,26);
+	this.coal = new Button( this, this.textures.coal,298,150,'energyVideo.html?03-1_Factory',23,24,30);
+	this.petroleum = new Button( this, this.textures.petroleum, 656,150,'energyVideo.html?03-2_Factory',23,23,28);
+	this.nuclear = new Button( this, this.textures.nuclear, 1014,150,'energyVideo.html?03-3_Factory',23,23,28);
+	this.gas = new Button( this, this.textures.gas, 1372,150,'energyVideo.html?03-4_Factory',23,23,28);
+	this.water = new Button( this, this.textures.water, 298,473,'energyVideo.html?03-5_Factory',21,21,26);
+	this.sun = new Button( this, this.textures.sun, 656,473,'energyVideo.html?03-6_Factory',21,21,25);
+	this.wind = new Button( this, this.textures.wind, 1014,473,'energyVideo.html?03-7_Factory',22,21,26);
+	this.underworld = new Button( this, this.textures.underworld, 1372,473,'energyVideo.html?03-8_Factory',21,22,26);
 
 	//ทุกๆ Component ที่เรา new ขึ้นมาจะยังไม่สามารถมองเห็นได้ในตอนนี้
 	//โดยเพื่อจะแสดงออกมาให้ปรากฏใน Canvas เราจะต้องใช้คำสั่ง this.addChild(ก็ชื่อตามที่ new ขึ้นมา);
@@ -235,7 +234,7 @@ myState.updateButtonAnimation = function(){
 	var chkBtn = this.buttonGroup.members;
 	for (var i = 0; i < chkBtn.length; i++) {
 		if(this.character.physics.overlaps(chkBtn[i])){
-				console.log("overlap",chkBtn[i]+i);
+				console.log("Change color");
 				chkBtn[i].animation.play('float');
 				if(isGrab){
 					isMoving = true;
