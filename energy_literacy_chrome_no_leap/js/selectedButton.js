@@ -6,6 +6,19 @@ var gameOptions = {
 
 };
 
+var isGrab ;
+
+var controller = Leap.loop(function(frame){
+    if(frame.hands.length > 0)
+    {
+        var hand = frame.hands[0];
+        var position = hand.palmPosition;
+        var velocity = hand.palmVelocity;
+		var direction = hand.direction;
+		isGrab = (hand.grabStrength == 1);
+    }
+});
+
 
 //รูปแบบการสร้าง Animation ด้วย KiwiJS เบื้องต้น
 //myGame เป็นเหมือน Panel ที่เก็บทุกอย่างเอาไว้เพื่อเอาไปสร้างเป็น Canvas
@@ -90,7 +103,7 @@ myState.create = function(){
 	//ต่อไปนี้เป็นการบอกให้ timer รู้ว่าต้องทำอะไรเมื่อไหร่ ในที่นี้มันจะทำก็ต้องเมื่อ timer หยุดลง
 	timer.createTimerEvent( Kiwi.Time.TimerEvent.TIMER_STOP,
 			function() {
-					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || myState.control.hands[0].pointables[0].touchZone == "touching" || myState.updateLoadingPageStatus()){
+					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || isGrab || myState.updateLoadingPageStatus()){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
@@ -199,15 +212,7 @@ myState.update = function(){
 
 			this.updateButtonAnimation();
 			//console.log('hovering');
-		}else if(this.control.hands[0].pointables[0].touchZone == "touching"){
-			if(this.control.hands[0].posZ < 30){
-				isMoving = true;
-				console.log('Press at'+this.control.hands[0].posZ);
-				this.character.animation.play('press');
-				this.updateTheVelocity();
-			}
-		}
-		else{
+		}else{
 				isMoving = false;
 				this.character.animation.play('point');
 						this.updateLoadingPageStatus();
@@ -230,8 +235,14 @@ myState.updateButtonAnimation = function(){
 	var chkBtn = this.buttonGroup.members;
 	for (var i = 0; i < chkBtn.length; i++) {
 		if(this.character.physics.overlaps(chkBtn[i])){
-				console.log("Change color");
+				console.log("overlap",chkBtn[i]+i);
 				chkBtn[i].animation.play('float');
+				if(isGrab){
+					isMoving = true;
+					console.log('Press at'+this.control.hands[0].posZ);
+					this.character.animation.play('press');
+					this.updateTheVelocity();
+				}
 		}
 	}
 

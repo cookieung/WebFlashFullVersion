@@ -1,6 +1,11 @@
 var timer;
 var curr_page;
 
+
+$("#exhibition_show").append("<div id='leap-pointer' style='position: absolute; opacity: 0.5'>"+
+"<svg width='100' height='100'>"+"<circle cx='50' cy='50' r='25' stroke='black' stroke-width='1' fill='grey' />"+
+"</svg></div>");
+
 function initLedEmu() {
 	if (external) {
 	} else {
@@ -92,6 +97,8 @@ console.log("curr_page :"+curr_page);
 if (external.AddListenerForLeapMotion)
 	external.AddListenerForLeapMotion(LeapHandler);
 
+	
+
 		if (external.LedBlink) {
 			for(var i=0; i<16; i++){
 					external.LedBlink(i, 0, false);
@@ -113,9 +120,38 @@ if (external.AddListenerForLeapMotion)
 		}
 
 
+		function LeapPointerDraw(hands) {
+
+				console.log("Draw");
+			
+				$("#leap-pointer").show();
+			
+				var leapPointer = $("#leap-pointer");
+				//var leapPointerCircle = $("#leap-pointer svg circle")
+				if (hands.length>0) {
+					var x = hands[0][0],
+							y = hands[0][1],
+							z = hands[0][2];
+					$("#leap-pointer").css({"left": x*window.innerWidth-100, "top": (1-y)*window.innerHeight-100});
+					$("#leap-pointer svg circle").attr({
+								"r": (80*(1-z)).toString(),
+								"fill": "green"
+						});
+					$("#suggestion").show();
+				} else {
+					$("#leap-pointer svg circle").attr({
+							"r": "0",
+							"fill": "grey"
+					});
+					$("#suggestion").hide();
+				}
+			}
+
+
 function LeapHandler(fh) {
 
 
+		LeapPointerDraw(fh.hands);
 
 		LeapHandChangePage(fh.hands);
 

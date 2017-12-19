@@ -7,6 +7,22 @@ var gameOptions = {
 
 };
 
+
+var isGrab ;
+
+var controller = Leap.loop(function(frame){
+    if(frame.hands.length > 0)
+    {
+        var hand = frame.hands[0];
+        var position = hand.palmPosition;
+        var velocity = hand.palmVelocity;
+		var direction = hand.direction;
+		isGrab = (hand.grabStrength == 1);
+    }
+});
+
+
+
 //รูปแบบการสร้าง Animation ด้วย KiwiJS เบื้องต้น
 //myGame เป็นเหมือน Panel ที่เก็บทุกอย่างเอาไว้เพื่อเอาไปสร้างเป็น Canvas
 var myGame = new Kiwi.Game("layer2","kiwiLayer",null,gameOptions);
@@ -82,7 +98,7 @@ myState.create = function(){
 	timer.createTimerEvent( Kiwi.Time.TimerEvent.TIMER_STOP,
 			function() 
 			{
-					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" ||  (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3)){
+					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || isGrab || (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3)){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
 						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
@@ -219,19 +235,7 @@ myState.update = function(){
 				this.updateButtonAnimation();
 				console.log('hovering');
 
-			}else if(this.control.hands[0].pointables[0].touchZone == "touching"){
-					if(this.control.hands[0].posZ < 30){
-						console.log('Press at'+this.control.hands[0].posZ);
-						this.character.animation.play('press');
-							var key = this.callVideo();
-							console.log('Key :'+key);
-							if(key > 0){
-							window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
-							sessionStorage.lamp = key;
-							}
-					}
-			}
-			else{
+			}else{
 					this.character.animation.play("point");
 				}
 		}
@@ -259,6 +263,16 @@ myState.updateButtonAnimation = function(){
 		if(this.character.physics.overlaps(chkBtn[i])){
 				console.log("Change color");
 				chkBtn[i].animation.play('float');
+				if(isGrab){
+					console.log('Press at'+this.control.hands[0].posZ);
+					this.character.animation.play('press');
+						var key = this.callVideo();
+						console.log('Key :'+key);
+						if(key > 0){
+						window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
+						sessionStorage.lamp = key;
+						}
+				}
 		}
 	}
 
