@@ -8,12 +8,24 @@ if(indicate.length==1){
 }else video_name = indicate[1];
 
 
+let sp = video_name.split("-");
+let sr = (sp[0].charAt(sp[0].length-2)+""+sp[0].charAt(sp[0].length-1))
+let tmp = parseInt(sp[0].charAt(sp[0].length-1));
+
+let mapTimer = {
+	"03":indicate[indicate.length-3],
+	"04":indicate[indicate.length-2],
+	"05":indicate[indicate.length-1]
+	};
+
+
 $("#exhibition_show").append("<div id='leap-pointer' style='position: absolute; opacity: 0.5'>"+
 "<svg width='100' height='100'>"+"<circle cx='50' cy='50' r='25' stroke='black' stroke-width='1' fill='grey' />"+
 "</svg></div>");
 
 document.getElementById("video").setAttribute("src", "webm/source_energy/"+video_name+".webm");
-document.getElementById("video").load();
+play("03");
+
 
 console.log("curr",curr);
 
@@ -27,10 +39,6 @@ function findNextPage(){
     }else video_name = indicate[1];
 	console.log(video_name);
 	
-	if(video_name.indexOf("05") >= 0 ){ 
-		console.log("test")
-		window.location = "../energy_literacy_chrome_no_leap/lightSelection.html";
-	}
 
     let sp = video_name.split("-");
     let sr = (sp[0].charAt(sp[0].length-2)+""+sp[0].charAt(sp[0].length-1))
@@ -58,8 +66,19 @@ function playNextVideo(){
 		findNextPage();
 			
 		document.getElementById("video").setAttribute("src", "webm/source_energy/"+curr);
-		document.getElementById("video").load();
+		play(curr.split("-")[0]);
 
+
+}
+
+function play(c){
+	document.getElementById("video").play();
+	setTimeout(function() {
+		if($("#video").attr("src").indexOf("05") >= 0 ){ 
+			console.log("test")
+			window.location = "../energy_literacy_chrome_no_leap/lightSelection.html";
+		}else	playNextVideo();
+	  }, mapTimer[c]*1000);
 }
 
 function findPreviousPage(){
@@ -75,10 +94,6 @@ function findPreviousPage(){
 		console.log(video_name)
 
 	
-		if(video_name.indexOf("03") >= 0 ){ 
-					console.log("test")
-					window.location = "../energy_literacy_chrome_no_leap/selectsource.html";
-		}
 
 		let sp = video_name.split("-");
 		let sr = (sp[0].charAt(sp[0].length-2)+""+sp[0].charAt(sp[0].length-1))
@@ -192,7 +207,10 @@ function LeapHandler(fh) {
  					} else {
 						console.log('Right'+timer);
 						if(timer >= 10){
-							playNextVideo();
+							if($("#video").attr("src").indexOf("05") >= 0 ){ 
+								console.log("test")
+								window.location = "../energy_literacy_chrome_no_leap/lightSelection.html";
+							}else playNextVideo();
 							timer =0;
 						}else timer++;
 
@@ -211,6 +229,16 @@ function LeapHandler(fh) {
  }
 
 
-    document.getElementById("right-arrow").addEventListener("click", playNextVideo);
+    document.getElementById("right-arrow").addEventListener("click", function(){
+		if($("#video").attr("src").indexOf("05") >= 0 ){ 
+			console.log("test")
+			window.location = "../energy_literacy_chrome_no_leap/lightSelection.html";
+		}else playNextVideo();
+	});
 
-    document.getElementById("left-arrow").addEventListener("click", playPreviousVideo);
+    document.getElementById("left-arrow").addEventListener("click", function(){
+		if($("#video").attr("src").indexOf("03") >= 0 ){ 
+			console.log("test")
+			window.location = "../energy_literacy_chrome_no_leap/selectsource.html";
+		}else playPreviousVideo();
+	});

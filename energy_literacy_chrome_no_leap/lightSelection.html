@@ -122,6 +122,7 @@ function handleComplete() {
 					}
 					document.getElementById("video").onended = function() {
 							sessionStorage.clear();
+							console.log("Video End Light")
 
 					    window.location = "lightSelection.html";
 					};

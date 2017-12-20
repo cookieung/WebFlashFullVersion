@@ -98,12 +98,14 @@ myState.create = function(){
 	timer.createTimerEvent( Kiwi.Time.TimerEvent.TIMER_STOP,
 			function() 
 			{
-					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || isGrab || (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3)){
+				console.log("timer",isGrab,isMoving,myState.control.hands[0].pointables[0].touchZone  == "hovering" ||  (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3));
+					if(myState.control.hands[0].pointables[0].touchZone  == "hovering" || (sessionStorage.lamp === 1 || sessionStorage.lamp === 2 || sessionStorage.lamp === 3)){
 						//อันนี้หมายถึง ถ้าขยับมืออยู่ก็ไม่ต้องทำอะไร
 					}else {
-						//อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
-							if( myState.control.controllerConnected ||(sessionStorage.lamp===undefined && !isMoving)){
-							console.log( "Time's Up" );
+						// //อันนี้แน่นอน ถ้าไม่มีใครขยับอะไรเลยก็ให้มันกลับไปหน้า index
+							console.log("timer",sessionStorage.lamp,!isMoving,( sessionStorage.lamp===undefined));
+							if( sessionStorage.lamp===undefined){
+							console.log( "Video End Time's Up" );
 							window.location.href = '../index.html';
 							clock.removeTimer( timer );
 							}
@@ -137,6 +139,7 @@ myState.moveCursor = function () {
 		if(key > 0){
 		window.location = "lightSelection.html?lamp=" + encodeURIComponent(key);
 		sessionStorage.lamp = key;
+
 		}
 	}
 
